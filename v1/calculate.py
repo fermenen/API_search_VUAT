@@ -3,15 +3,12 @@ class calculate:
     @staticmethod
     def search(origen, destino, fecha, pasajeros):
         import Scrapper.api as api
-        results = {}
 
-        country = 'ES'
-        currency = 'EUR'
-        locale = 'es-ES'
-        originplace = 'MAD-sky'
-        destinationplace = 'SVQ-sky'
-        outboundpartialdate = '2019-07-09'
-        inboundpartialdate = ''
+        originplace = 'BCN'
+        destinationplace = 'MAD'
+        date_from = '08/07/2019'
 
-        results = api.Skyscanner.get_data(country, currency, locale, originplace, destinationplace, outboundpartialdate, inboundpartialdate)
-        return results
+        data_kiwi = api.kiwi_api.get_data(originplace, destinationplace, date_from)
+
+
+        return  data_kiwi

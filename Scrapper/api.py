@@ -1,25 +1,16 @@
-class Skyscanner:
+class kiwi_api:
 
-    TOKEN = 'ceabdcd708msh8e214f643d58de6p18e13cjsnb1cd40632505'
+    URL = 'https://api.skypicker.com'
 
     @staticmethod
-    def get_data(country, currency, locale, originplace, destinationplace, outboundpartialdate, inboundpartialdate):
-        """
-        :param country: The market country your user is in
-        :param currency: The currency you want the prices in
-        :param locale: The locale you want the results in (ISO locale)
-        :param originplace: The origin place (see places)
-        :param destinationplace: The destination place (see places)
-        :param outboundpartialdate: The outbound date. Format “yyyy-mm-dd”, “yyyy-mm” or “anytime”.
-        :param inboundpartialdate: OPTIONAL The return date. Format “yyyy-mm-dd”, “yyyy-mm” or “anytime”. Use empty string for oneway trip.
-        """
+    def get_data(originplace, destinationplace, date_from):
         import requests
-        r = requests.get(f"https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0/{country}/{currency}/{locale}/{originplace}/{destinationplace}/{outboundpartialdate}?inboundpartialdate={inboundpartialdate}",
-                headers={
-                "X-RapidAPI-Host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-                "X-RapidAPI-Key": Skyscanner.TOKEN}
-            )
-        if r.status_code == 200:
-            return r.json()
-        else:
-            return Exception
+        info = f'/flights?fly_from={originplace}&fly_to={destinationplace}&date_from={date_from}'
+
+        data_url = kiwi_api.URL+info
+
+        response = requests.get(url=data_url)
+        if response.status_code == 200:
+            return response.json()
+
+
