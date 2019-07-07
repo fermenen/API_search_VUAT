@@ -2,80 +2,84 @@ import flask
 from flask import request, jsonify
 import jwt
 import datetime
+import v1.calculate as aux
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
-
-# Create some test data for our catalog in the form of a list of dictionaries.
-books = [
-    {'id': 0,
-     'title': 'A Fire Upon the Deep',
-     'author': 'Vernor Vinge',
-     'first_sentence': 'The coldsleep itself was dreamless.',
-     'year_published': '1992'}
-]
+app.config.from_object('config.BaseConfig')
 
 
 class Auth:
 
-    def encode_auth_token(self, user_id):
+    @staticmethod
+    def encode_auth_token(user_id):
         """
         Generates the Auth Token
         :return: string
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, minutes=15),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
-            return jwt.encode(
-                payload,
-                app.config.get('SECRET_KEY'),
-                algorithm='HS256'
-            )
+            return jwt.encode(payload, app.config.get('SECRET_KEY'), algorithm='HS256')
         except Exception as e:
             return e
 
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            raise Exception('Signature expired. Please log in again.')
+        except jwt.InvalidTokenError:
+            raise Exception('Invalid token. Please log in again.')
 
 
-
-
-@app.route('/', methods=['GET'])
-def home():
-    return '''<h1>Distant Reading Archive</h1>
-<p>A prototype API for distant reading of science fiction novels.</p>'''
-
-
-
-
-
-
-
-@app.route('/api/v1/resources/books/all', methods=['GET'])
-def api_all():
-    return jsonify(books)
-
-
-@app.route('/api/v1/resources/books', methods=['GET'])
-def api_id():
+@app.route('/api/v1/auth/login', methods=['GET'])
+def api_auth_login():
     if 'id' in request.args:
         id = int(request.args['id'])
     else:
         return "Error: No id field provided. Please specify an id."
+    return Auth.encode_auth_token(id)
 
-    # Create an empty list for our results
-    results = []
 
-    # Loop through the data and match results that fit the requested ID.
-    # IDs are unique, but other fields might return many results
-    for book in books:
-        if book['id'] == id:
-            results.append(book)
+@app.route('/api/v1/home', methods=['GET'])
+def home():
+    if 'token' in request.args:
+        token = request.args['token']
+    else:
+        return "Error: token necessary"
 
-    # Use the jsonify function from Flask to convert our list of
-    # Python dictionaries to the JSON format.
-    return jsonify(results)
+    try:
+        Auth.decode_auth_token(token)
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+    return '''<h1>API V1 VUAT</h1>
+    <p>Busqueda de vuelos, autobuses y trenes.</p>'''
+
+
+@app.route('/api/v1/search', methods=['GET'])
+def search():
+    if 'token' in request.args:
+        token = request.args['token']
+    else:
+        return "Error: token necessary"
+
+    try:
+        Auth.decode_auth_token(token)
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+    return jsonify(aux.calculate.search(origen='', destino='', fecha='', pasajeros=1))
 
 
 app.run()
