@@ -18,7 +18,7 @@ class Auth:
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, minutes=15),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=5, minutes=15),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
@@ -69,8 +69,8 @@ def home():
 
 @app.route('/api/v1/search', methods=['GET'])
 def search():
-    if 'token' in request.args:
-        token = request.args['token']
+    if 't' in request.args:
+        token = request.args['t']
     else:
         return "Error: token necessary"
 
@@ -79,7 +79,17 @@ def search():
     except Exception as e:
         return f"ERROR: {str(e)}"
 
-    return jsonify(aux.calculate.search(origen='', destino='', fecha='', pasajeros=1))
+    if 'o' in request.args:
+        origin_e = request.args['o']
+    if 'd' in request.args:
+        destination_e = request.args['d']
+    if 'date' in request.args:
+        date = request.args['date']
+    if 'a' in request.args:
+        adults = request.args['a']
+
+    return jsonify(aux.calculate.search(origin=origin_e, destination=destination_e, date=date, adults=adults, children=0,
+                                        babies=0))
 
 
 app.run()

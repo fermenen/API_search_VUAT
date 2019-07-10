@@ -6,9 +6,8 @@ class bus_radar_api:
     CURRENCY = 'EUR'
 
     @staticmethod
-    def get_data(originplace, destinationplace, date_from):
+    def get_data(originplace, destinationplace, date_from, passangers=1, radius=10000):
         import requests
-        import json
 
         headers = {
             'Cookie': f'session_id={bus_radar_api.SESSION}',
@@ -21,13 +20,13 @@ class bus_radar_api:
         data = r'''{
             "allTransports": true,
             "allowDeletion": true,
-            "allowFerry": true,
-            "allowFlight": true,
+            "allowFerry": false,
+            "allowFlight": false,
             "allowStored": true,
             "flexibility": 0,
             "from": "{originplace}" ,
-            "passengers": 1,
-            "radius": 15000,
+            "passengers": {passangers},
+            "radius": {radius},
             "to": "{destinationplace}" ,
             "visibilityUpdates": 2,
             "when": "{date_from}"
@@ -35,10 +34,14 @@ class bus_radar_api:
 
         data = data.replace('{originplace}', originplace)
         data = data.replace('{destinationplace}', destinationplace)
+        data = data.replace('{passangers}', str(passangers))
+        data = data.replace('{radius}', str(radius))
         data = data.replace('{date_from}', date_from)
 
         response = requests.post(url=bus_radar_api.URL, headers=headers, data=data)
         if response.status_code == 200:
             return response.json()
+        else:
+            print("DEBYG: API no responde") #TODO Sustituir por reintentos y log en caso de fallo
 
 

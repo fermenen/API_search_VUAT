@@ -1,7 +1,7 @@
 class calculate:
 
     @staticmethod
-    def search(origen, destino, fecha, pasajeros):
+    def search(origin, destination, date, adults=1, children=0, babies=0):
         import Scrapper.kiwi as api_flights
         import Scrapper.bus_radar as api_bus
 
