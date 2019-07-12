@@ -69,6 +69,13 @@ def home():
 
 @app.route('/api/v1/search', methods=['GET'])
 def search():
+    global origin
+    global destination
+    global date
+    global asults
+    global children
+    global babies
+
     if 't' in request.args:
         token = request.args['t']
     else:
@@ -80,15 +87,17 @@ def search():
         return f"ERROR: {str(e)}"
 
     if 'o' in request.args:
-        origin_e = request.args['o']
+        origin = request.args['o']
     if 'd' in request.args:
-        destination_e = request.args['d']
+        destination = request.args['d']
     if 'date' in request.args:
         date = request.args['date']
     if 'a' in request.args:
         adults = request.args['a']
+    else:
+        return "Error: missing"
 
-    return jsonify(aux.calculate.search(origin=origin_e, destination=destination_e, date=date, adults=adults, children=0,
+    return jsonify(aux.calculate.search(origin=origin, destination=destination, date=date, adults=adults, children=0,
                                         babies=0))
 
 
