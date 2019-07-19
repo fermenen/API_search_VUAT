@@ -10,7 +10,7 @@ class calculate:
 
         data_kiwi = api_flights.kiwi_api.get_data('BCN', 'MAD', '08/07/2019')
 
-        data_bus = api_bus.bus_radar_api.get_data(origin, destination, "2019-07-10", adults)
+        data_bus = api_bus.bus_radar_api.get_data(origin, destination, "2019-07-20", adults)
 
 
         return data_bus

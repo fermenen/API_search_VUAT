@@ -21,7 +21,7 @@ class bus_radar_api:
             "allTransports": true,
             "allowDeletion": true,
             "allowFerry": false,
-            "allowFlight": false,
+            "allowFlight": true,
             "allowStored": true,
             "flexibility": 0,
             "from": "{originplace}" ,
@@ -42,6 +42,6 @@ class bus_radar_api:
         if response.status_code == 200:
             return response.json()
         else:
-            print("DEBYG: API no responde") #TODO Sustituir por reintentos y log en caso de fallo
+            print("DEBUG: API no responde") #TODO Sustituir por reintentos y log en caso de fallo
 
 
