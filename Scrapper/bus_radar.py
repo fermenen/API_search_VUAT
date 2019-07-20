@@ -8,6 +8,7 @@ class bus_radar_api:
     @staticmethod
     def get_data(originplace, destinationplace, date_from, passangers=1, radius=10000):
         import requests
+        import v1.api_entrance as v1
 
         headers = {
             'Cookie': f'session_id={bus_radar_api.SESSION}',
@@ -42,6 +43,6 @@ class bus_radar_api:
         if response.status_code == 200:
             return response.json()
         else:
-            print("DEBUG: API no responde") #TODO Sustituir por reintentos y log en caso de fallo
+            v1.log.push_log_debug(f"API BUS RADAR -> 400")
 
 

@@ -2,10 +2,17 @@ import flask
 from flask import request, jsonify
 import jwt
 import datetime
-import v1.calculate as aux
+
 
 app = flask.Flask(__name__)
 app.config.from_object('config.BaseConfig')
+
+
+class log:
+
+    @staticmethod
+    def push_log_debug(mesagge):
+        app.logger.debug(mesagge)
 
 
 class Auth:
@@ -69,6 +76,7 @@ def home():
 
 @app.route('/api/v1/search', methods=['GET'])
 def search():
+    import v1.calculate
     global origin
     global destination
     global date
@@ -97,8 +105,8 @@ def search():
     else:
         return "Error: missing"
 
-    return jsonify(aux.calculate.search(origin=origin, destination=destination, date=date, adults=adults, children=0,
-                                        babies=0))
+    return jsonify(v1.calculate.search(origin=origin, destination=destination, date=date, adults=adults, children=0, babies=0))
 
 
-app.run()
+if __name__ == '__main__':
+    app.run()
