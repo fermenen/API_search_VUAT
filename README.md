@@ -1,2 +1,2 @@
-# API_search_VUAT
-API busqueda de vuelos, autobuses y trenes
+# VUAT (API Search)
+VUAT is an API search for flights, buses and trains getting the cheapest route.
